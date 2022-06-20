@@ -1,5 +1,4 @@
 import data.BoardGenerator
-import solver.SmartCharacter
 
 fun main(args: Array<String>) {
 
@@ -19,5 +18,7 @@ fun main(args: Array<String>) {
 
     smartCharacter
         .findFirstPendant()
-
+        .findSecondPendant()
+        .findThirdPendant()
+        .goToLostWoods()
 }
