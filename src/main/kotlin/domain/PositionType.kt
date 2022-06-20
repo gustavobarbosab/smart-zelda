@@ -3,7 +3,7 @@ package domain
 import data.entitiy.PositionTypeEnum
 
 sealed class PositionType(
-    val cost: Int = 0,
+    val cost: Int = -1,
     val enum: PositionTypeEnum
 ) {
     object Grass : PositionType(10, PositionTypeEnum.GRASS)

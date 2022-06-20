@@ -1,6 +1,6 @@
-package solver
-
 import domain.Node
+import solver.DungeonSolver
+import solver.HyruleSolver
 import solver.HyruleSolver.Companion.NearestDungeon
 import solver.HyruleSolver.Companion.NearestDungeon.*
 
@@ -21,11 +21,13 @@ class SmartCharacter(
     }
 
     fun findSecondPendant() = apply {
-
+        val nearestDungeon = hyruleSolver.goToNearestDungeon()
+        // findPendant(nearestDungeon)
     }
 
     fun findThirdPendant() = apply {
-
+        val nearestDungeon = hyruleSolver.goToNearestDungeon()
+        // findPendant(nearestDungeon)
     }
 
     fun goToLostWoods() = apply {

@@ -1,43 +1,46 @@
 package search
 
 import domain.Node
-import domain.NodeCalculator
+import domain.NodeAStarCalculator
 import domain.mapper.mapToNodeGenerator
 import domain.exceptions.ImpossibleGoalException
 
 class AStarSearch(private val board: List<List<Node>>) {
 
-    private var nonVisitedNodes = mutableListOf<NodeCalculator>()
-    private val visitedNodes = mutableListOf<NodeCalculator>()
-    private var greatPath = mutableListOf<NodeCalculator>()
+    private var nonVisitedNodes = mutableListOf<NodeAStarCalculator>()
+    private val visitedNodes = mutableListOf<NodeAStarCalculator>()
+    private var greatPath = mutableListOf<NodeAStarCalculator>()
 
-    fun findGreatPath(currentPosition: Pair<Int, Int>, goal: Pair<Int, Int>): List<Node> {
+    fun findGreatPath(currentPosition: Pair<Int, Int>, goal: Pair<Int, Int>): List<Pair<Int, Int>> {
         resetSearch()
 
         // Initializing non visited nodes
         val currentNodeCalculator = board[currentPosition.first][currentPosition.second].mapToNodeGenerator(
             goal = goal,
-            father = null
+            father = null,
+            accumulatedCost = 0
         )
         nonVisitedNodes.add(currentNodeCalculator)
 
         while (nonVisitedNodes.isNotEmpty()) {
             val nodeCalculatorToVisit = readTheLowestHeuristicInNonVisitedNodes()
             visitedNodes.add(nodeCalculatorToVisit)
-            updateGreatPath(nodeCalculatorToVisit)
 
             nodeCalculatorToVisit.node.getNeighbors().forEach { neighbor ->
                 val neighborCalculator = board[neighbor.first][neighbor.second].mapToNodeGenerator(
                     goal = goal,
-                    father = nodeCalculatorToVisit.node
+                    father = nodeCalculatorToVisit,
+                    accumulatedCost = nodeCalculatorToVisit.gFunction
                 )
 
                 // Neighbor is the goal?
                 if (neighbor == goal) {
                     println("Encontramos o objetivo:")
-                    val listToReturn = greatPath.map { it.node }.toMutableList()
-                    listToReturn.add(neighborCalculator.node)
-                    return listToReturn
+                    return createGreatPath(nodeCalculatorToVisit, goal)
+                }
+
+                if (neighborCalculator.node.type.cost < 0) {
+                    return@forEach
                 }
 
                 // Exists a node do not visited better than this neighbor?
@@ -67,7 +70,7 @@ class AStarSearch(private val board: List<List<Node>>) {
         throw ImpossibleGoalException("This goal can not be found")
     }
 
-    private fun readTheLowestHeuristicInNonVisitedNodes(): NodeCalculator {
+    private fun readTheLowestHeuristicInNonVisitedNodes(): NodeAStarCalculator {
         val nodeToVisit = nonVisitedNodes.minByOrNull { it.heuristic } ?: throw Exception()
         nonVisitedNodes.remove(nodeToVisit)
         return nodeToVisit
@@ -78,13 +81,19 @@ class AStarSearch(private val board: List<List<Node>>) {
         visitedNodes.clear()
     }
 
-    private fun updateGreatPath(nodeCalculatorToVisit: NodeCalculator) {
-        val lastGreatFather = greatPath.lastOrNull()
-        val visitFather = nodeCalculatorToVisit.father
-        if (visitFather != lastGreatFather?.node) {
-            val visitFatherPosition = greatPath.indexOf(lastGreatFather)
-            greatPath = greatPath.subList(0, visitFatherPosition-1)
+    private fun createGreatPath(
+        goalFatherCalculator: NodeAStarCalculator,
+        goal: Pair<Int, Int>
+    ): MutableList<Pair<Int, Int>> {
+        var father = goalFatherCalculator.father
+        val greatPath = mutableListOf<Pair<Int, Int>>()
+        greatPath.add(goal)
+        greatPath.add(goalFatherCalculator.node.position)
+        while (father != null) {
+            greatPath.add(father.node.position)
+            father = father.father
         }
-        greatPath.add(nodeCalculatorToVisit)
+        greatPath.reverse()
+        return greatPath
     }
 }

@@ -2,12 +2,13 @@ package domain
 
 import kotlin.math.abs
 
-class NodeCalculator(
+class NodeAStarCalculator(
     val node: Node,
-    val father: Node?,
+    val father: NodeAStarCalculator?,
+    accumulatedCost: Int,
     private val goal: Pair<Int, Int>
 ) {
-    private var gFunction: Int = node.type.cost
+    var gFunction: Int = node.type.cost + accumulatedCost
     private var hFunction: Int = calculateDistanceToGoal()
 
     val heuristic

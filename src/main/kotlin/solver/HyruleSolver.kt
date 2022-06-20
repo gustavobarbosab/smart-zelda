@@ -4,10 +4,12 @@ import domain.HyruleMainPositions
 import domain.Node
 import domain.PositionType
 import search.AStarSearch
+import search.UniformCostSearch
 
 class HyruleSolver(private val board: List<List<Node>>) {
 
     private val mainPositions = HyruleMainPositions()
+    private val aStarHyruleSearch = AStarSearch(board)
 
     init {
         mapPositions()
@@ -15,7 +17,14 @@ class HyruleSolver(private val board: List<List<Node>>) {
     }
 
     fun goToNearestDungeon() {
-        // TODO here we need decided what is the best dungeon
+        // // TODO here we need decided what is the best dungeon
+        // val nextDungeonToGo = findNextDungeonToGo()
+        // val pathToSolution = aStarHyruleSearch.findGreatPath(mainPositions.currentPosition, nextDungeonToGo.position)
+        // pathToSolution.forEach {
+        //     print("${it.position} | ")
+        // }
+        // mainPositions.currentPosition = nextDungeonToGo.position
+
         val bestDungeonToGo = mainPositions.firstDungeon
 
         val search = AStarSearch(board)
@@ -23,12 +32,29 @@ class HyruleSolver(private val board: List<List<Node>>) {
         val pathToSolution = search.findGreatPath(linkHouse, bestDungeonToGo)
 
         pathToSolution.forEach {
-            print("${it.position} | ")
+            print("$it | ")
         }
     }
 
-    fun goToLostWoods() {
+    private fun findNextDungeonToGo(): Node {
+        val uniformSearchHyrule = UniformCostSearch(board)
+        val pathToFirstDungeon = uniformSearchHyrule.findPath(
+            mainPositions.currentPosition,
+            mainPositions.firstDungeon
+        )
+        val pathToSecondDungeon = uniformSearchHyrule.findPath(
+            mainPositions.currentPosition,
+            mainPositions.secondDungeon
+        )
+        val pathToThirdDungeon = uniformSearchHyrule.findPath(
+            mainPositions.currentPosition,
+            mainPositions.thirdDungeon
+        )
         TODO()
+    }
+
+    fun goToLostWoods() {
+
     }
 
     private fun mapPositions() {
@@ -39,6 +65,7 @@ class HyruleSolver(private val board: List<List<Node>>) {
             }
             println()
         }
+        mainPositions.startCurrentPosition()
     }
 
     private fun savePosition(item: Node) {
