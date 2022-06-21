@@ -1,8 +1,9 @@
 import domain.Node
 import solver.DungeonSolver
 import solver.HyruleSolver
-import solver.HyruleSolver.Companion.NearestDungeon
-import solver.HyruleSolver.Companion.NearestDungeon.*
+import solver.HyruleSolver.Companion.NearestDungeon.First
+import solver.HyruleSolver.Companion.NearestDungeon.Second
+import solver.HyruleSolver.Companion.NearestDungeon.Third
 
 class SmartCharacter(
     hyruleBoard: List<List<Node>>,
@@ -15,30 +16,21 @@ class SmartCharacter(
     private val secondDungeonSolver = DungeonSolver(secondDungeonBoard)
     private val thirdDungeonSolver = DungeonSolver(thirdDungeonBoard)
 
-    fun findFirstPendant() = apply {
-        val nearestDungeon = hyruleSolver.goToNearestDungeon()
-        // findPendant(nearestDungeon)
-    }
+    fun findFirstPendant() = findPendant()
 
-    fun findSecondPendant() = apply {
-        val nearestDungeon = hyruleSolver.goToNearestDungeon()
-        // findPendant(nearestDungeon)
-    }
+    fun findSecondPendant() = findPendant()
 
-    fun findThirdPendant() = apply {
-        val nearestDungeon = hyruleSolver.goToNearestDungeon()
-        // findPendant(nearestDungeon)
-    }
+    fun findThirdPendant() = findFirstPendant()
 
-    fun goToLostWoods() = apply {
-        hyruleSolver.goToLostWoods()
-    }
-
-    private fun findPendant(dungeon: NearestDungeon) {
-        when (dungeon) {
+    private fun findPendant() = apply {
+        when (hyruleSolver.goToNearestDungeon()) {
             First -> firstDungeonSolver.findPendant()
             Second -> secondDungeonSolver.findPendant()
             Third -> thirdDungeonSolver.findPendant()
         }
+    }
+
+    fun goToLostWoods() = apply {
+        hyruleSolver.goToLostWoods()
     }
 }

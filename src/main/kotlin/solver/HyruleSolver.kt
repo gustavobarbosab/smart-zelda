@@ -26,8 +26,14 @@ class HyruleSolver(private val board: List<List<Node>>) {
         mainPositions.printResume()
     }
 
-    fun goToNearestDungeon() {
-        val bestDungeonPosition = findNextDungeonToGo() ?: throw AllDungeonsVisitedException("All dungeons visited")
+    fun goToNearestDungeon(): NearestDungeon {
+        val bestDungeon = findNextDungeonToGo() ?: throw AllDungeonsVisitedException("All dungeons visited")
+
+        val bestDungeonPosition = when (bestDungeon) {
+            First -> mainPositions.firstDungeon
+            Second -> mainPositions.secondDungeon
+            Third -> mainPositions.thirdDungeon
+        }
 
         val pathToSolution = aStarHyruleSearch.findGreatPath(mainPositions.currentPosition, bestDungeonPosition)
 
@@ -39,9 +45,11 @@ class HyruleSolver(private val board: List<List<Node>>) {
         }
         println()
         mainPositions.currentPosition = bestDungeonPosition
+
+        return bestDungeon
     }
 
-    private fun findNextDungeonToGo(): Pair<Int, Int>? {
+    private fun findNextDungeonToGo(): NearestDungeon? {
         val nodesToVisit = mutableListOf<Pair<NearestDungeon, Int>>()
 
         if (dungeonsToVisit[First] == false) {
@@ -69,15 +77,8 @@ class HyruleSolver(private val board: List<List<Node>>) {
         }
 
         val lowerPosition = nodesToVisit.minByOrNull { it.second }
-        val selectedDungeonPosition = when (lowerPosition?.first) {
-            First -> mainPositions.firstDungeon
-            Second -> mainPositions.secondDungeon
-            Third -> mainPositions.thirdDungeon
-            null -> null
-        } ?: return null
-
-        dungeonsToVisit[lowerPosition!!.first] = true
-        return selectedDungeonPosition
+        lowerPosition?.first?.let { dungeonsToVisit[it] = true }
+        return lowerPosition?.first
     }
 
     fun goToLostWoods() {
