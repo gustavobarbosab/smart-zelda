@@ -31,11 +31,13 @@ class HyruleSolver(private val board: List<List<Node>>) {
 
         val pathToSolution = aStarHyruleSearch.findGreatPath(mainPositions.currentPosition, bestDungeonPosition)
 
-        println("\nGreat path: cost ${pathToSolution.pathGreat.totalCost}")
+        println("\nTotal path cost: ${pathToSolution.pathComplete.totalCost}")
+        println("Great path cost: ${pathToSolution.pathGreat.totalCost}")
+        println("Great path to dungeon $bestDungeonPosition")
         pathToSolution.pathGreat.path.forEach {
             print("${it.position} | ")
         }
-
+        println()
         mainPositions.currentPosition = bestDungeonPosition
     }
 
@@ -80,7 +82,9 @@ class HyruleSolver(private val board: List<List<Node>>) {
 
     fun goToLostWoods() {
         val pathToSolution = aStarHyruleSearch.findGreatPath(mainPositions.currentPosition, mainPositions.lostWoods)
-        println("\nPath to lost woods: cost ${pathToSolution.pathGreat.totalCost}")
+        println("\nTotal path cost: ${pathToSolution.pathComplete.totalCost}")
+        println("Great path cost: ${pathToSolution.pathGreat.totalCost}")
+        println("Great path to lost woods")
         pathToSolution.pathGreat.path.forEach {
             print("${it.position} | ")
         }
