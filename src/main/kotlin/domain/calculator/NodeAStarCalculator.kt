@@ -1,18 +1,17 @@
-package domain
+package domain.calculator
 
+import domain.Node
 import kotlin.math.abs
 
-class NodeAStarCalculator(
-    val node: Node,
-    val father: NodeAStarCalculator?,
-    accumulatedCost: Int,
+data class NodeAStarCalculator(
+    override val node: Node,
+    override val father: NodeAStarCalculator?,
+    private val accumulatedCost: Int,
     private val goal: Pair<Int, Int>
-) {
+) : NodeCalculator {
+
     var gFunction: Int = node.type.cost + accumulatedCost
     var hFunction: Int = calculateDistanceToGoal()
-
-    val heuristic
-        get() = gFunction + hFunction
 
     private fun calculateDistanceToGoal(): Int {
         val currentNodePosition = node.position
@@ -20,4 +19,6 @@ class NodeAStarCalculator(
         val absoluteY = abs(goal.second - currentNodePosition.second)
         return absoluteX + absoluteY
     }
+
+    override fun calcCost(): Int = gFunction + hFunction
 }

@@ -1,18 +1,16 @@
 package search
 
 import domain.Node
-import domain.NodeAStarCalculator
+import domain.calculator.NodeAStarCalculator
 import domain.Path
 import domain.PathToGoal
 import domain.mapper.mapToNodeGenerator
 import domain.exceptions.ImpossibleGoalException
-import kotlin.math.cos
 
 class AStarSearch(private val board: List<List<Node>>) {
 
     private var nonVisitedNodes = mutableListOf<NodeAStarCalculator>()
     private val visitedNodes = mutableListOf<NodeAStarCalculator>()
-    private var greatPath = mutableListOf<NodeAStarCalculator>()
 
     fun findGreatPath(currentPosition: Pair<Int, Int>, goal: Pair<Int, Int>): PathToGoal {
         resetSearch()
@@ -38,7 +36,6 @@ class AStarSearch(private val board: List<List<Node>>) {
 
                 // Neighbor is the goal?
                 if (neighbor == goal) {
-                    println("Encontramos o objetivo:")
                     visitedNodes.add(neighborCalculator)
                     val greatPath = createGreatPath(neighborCalculator, goal)
                     val visitedPath = Path(visitedNodes.map { it.node }, visitedNodes.sumOf { it.node.type.cost })
@@ -55,7 +52,7 @@ class AStarSearch(private val board: List<List<Node>>) {
                 // Exists a node do not visited better than this neighbor?
                 val nonVisitedItemLessThanNeighbor = nonVisitedNodes.firstOrNull { nonVisitedItem ->
                     val nonVisitedPosition = nonVisitedItem.node.position
-                    nonVisitedPosition == neighbor && nonVisitedItem.heuristic <= neighborCalculator.heuristic
+                    nonVisitedPosition == neighbor && nonVisitedItem.calcCost() <= neighborCalculator.calcCost()
                 }
 
                 // If exists, skip this neighbor
@@ -66,7 +63,7 @@ class AStarSearch(private val board: List<List<Node>>) {
                 // Exists a visited node better than this neighbor?
                 val visitedItemLessThanNeighbor = visitedNodes.firstOrNull { visitedItem ->
                     val visitedPosition = visitedItem.node.position
-                    visitedPosition == neighbor && visitedItem.heuristic <= neighborCalculator.heuristic
+                    visitedPosition == neighbor && visitedItem.calcCost() <= neighborCalculator.calcCost()
                 }
 
                 // If not exists, add this neighbor to be visited
@@ -80,7 +77,7 @@ class AStarSearch(private val board: List<List<Node>>) {
     }
 
     private fun readTheLowestHeuristicInNonVisitedNodes(): NodeAStarCalculator {
-        val nodeToVisit = nonVisitedNodes.minByOrNull { it.heuristic } ?: throw Exception()
+        val nodeToVisit = nonVisitedNodes.minByOrNull { it.calcCost() } ?: throw Exception()
         nonVisitedNodes.remove(nodeToVisit)
         return nodeToVisit
     }
@@ -103,6 +100,6 @@ class AStarSearch(private val board: List<List<Node>>) {
         }
         greatPath.reverse()
 
-        return Path(greatPath, goalCalculator.heuristic)
+        return Path(greatPath, goalCalculator.calcCost())
     }
 }

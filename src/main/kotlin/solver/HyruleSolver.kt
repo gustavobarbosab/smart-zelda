@@ -3,13 +3,23 @@ package solver
 import domain.HyruleMainPositions
 import domain.Node
 import domain.PositionType
+import domain.exceptions.AllDungeonsVisitedException
 import search.AStarSearch
 import search.UniformCostSearch
+import solver.HyruleSolver.Companion.NearestDungeon.*
+import kotlin.math.cos
 
 class HyruleSolver(private val board: List<List<Node>>) {
 
     private val mainPositions = HyruleMainPositions()
     private val aStarHyruleSearch = AStarSearch(board)
+    private val uniformSearchHyrule = UniformCostSearch(board)
+
+    private val dungeonsToVisit = hashMapOf(
+        First to false,
+        Second to false,
+        Third to false
+    )
 
     init {
         mapPositions()
@@ -17,49 +27,63 @@ class HyruleSolver(private val board: List<List<Node>>) {
     }
 
     fun goToNearestDungeon() {
-        // // TODO here we need decided what is the best dungeon
-        // val nextDungeonToGo = findNextDungeonToGo()
-        // val pathToSolution = aStarHyruleSearch.findGreatPath(mainPositions.currentPosition, nextDungeonToGo.position)
-        // pathToSolution.forEach {
-        //     print("${it.position} | ")
-        // }
-        // mainPositions.currentPosition = nextDungeonToGo.position
+        val bestDungeonPosition = findNextDungeonToGo() ?: throw AllDungeonsVisitedException("All dungeons visited")
 
-        val bestDungeonToGo = mainPositions.firstDungeon
-
-        val search = AStarSearch(board)
-        val linkHouse = mainPositions.linkHouse
-        val pathToSolution = search.findGreatPath(linkHouse, bestDungeonToGo)
+        val pathToSolution = aStarHyruleSearch.findGreatPath(mainPositions.currentPosition, bestDungeonPosition)
 
         println("\nGreat path: cost ${pathToSolution.pathGreat.totalCost}")
         pathToSolution.pathGreat.path.forEach {
             print("${it.position} | ")
         }
-        println("\nTotal path: cost ${pathToSolution.pathComplete.totalCost}")
-        pathToSolution.pathComplete.path.forEach {
-            print("${it.position} | ")
-        }
+
+        mainPositions.currentPosition = bestDungeonPosition
     }
 
-    private fun findNextDungeonToGo(): Node {
-        val uniformSearchHyrule = UniformCostSearch(board)
-        val pathToFirstDungeon = uniformSearchHyrule.findPath(
-            mainPositions.currentPosition,
-            mainPositions.firstDungeon
-        )
-        val pathToSecondDungeon = uniformSearchHyrule.findPath(
-            mainPositions.currentPosition,
-            mainPositions.secondDungeon
-        )
-        val pathToThirdDungeon = uniformSearchHyrule.findPath(
-            mainPositions.currentPosition,
-            mainPositions.thirdDungeon
-        )
-        TODO()
+    private fun findNextDungeonToGo(): Pair<Int, Int>? {
+        val nodesToVisit = mutableListOf<Pair<NearestDungeon, Int>>()
+
+        if (dungeonsToVisit[First] == false) {
+            val costToFirstDungeon = uniformSearchHyrule.findCostToGoal(
+                mainPositions.currentPosition,
+                mainPositions.firstDungeon
+            )
+            nodesToVisit.add(Pair(First, costToFirstDungeon))
+        }
+
+        if (dungeonsToVisit[Second] == false) {
+            val costToSecondDungeon = uniformSearchHyrule.findCostToGoal(
+                mainPositions.currentPosition,
+                mainPositions.secondDungeon
+            )
+            nodesToVisit.add(Pair(Second, costToSecondDungeon))
+        }
+
+        if (dungeonsToVisit[Third] == false) {
+            val costToThirdDungeon = uniformSearchHyrule.findCostToGoal(
+                mainPositions.currentPosition,
+                mainPositions.thirdDungeon
+            )
+            nodesToVisit.add(Pair(Third, costToThirdDungeon))
+        }
+
+        val lowerPosition = nodesToVisit.minByOrNull { it.second }
+        val selectedDungeonPosition = when (lowerPosition?.first) {
+            First -> mainPositions.firstDungeon
+            Second -> mainPositions.secondDungeon
+            Third -> mainPositions.thirdDungeon
+            null -> null
+        } ?: return null
+
+        dungeonsToVisit[lowerPosition!!.first] = true
+        return selectedDungeonPosition
     }
 
     fun goToLostWoods() {
-
+        val pathToSolution = aStarHyruleSearch.findGreatPath(mainPositions.currentPosition, mainPositions.lostWoods)
+        println("\nPath to lost woods: cost ${pathToSolution.pathGreat.totalCost}")
+        pathToSolution.pathGreat.path.forEach {
+            print("${it.position} | ")
+        }
     }
 
     private fun mapPositions() {
