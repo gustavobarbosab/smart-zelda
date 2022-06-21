@@ -1,8 +1,6 @@
-/.idea/
-/.gradle/
-/build/
-# Created by https://www.toptal.com/developers/gitignore/api/kotlin
-# Edit at https://www.toptal.com/developers/gitignore?templates=kotlin
+.idea/
+.gradle/
+build/
 
 ### Kotlin ###
 # Compiled class file
