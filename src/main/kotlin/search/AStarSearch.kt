@@ -2,6 +2,8 @@ package search
 
 import domain.Node
 import domain.NodeAStarCalculator
+import domain.Path
+import domain.PathToGoal
 import domain.mapper.mapToNodeGenerator
 import domain.exceptions.ImpossibleGoalException
 
@@ -11,7 +13,7 @@ class AStarSearch(private val board: List<List<Node>>) {
     private val visitedNodes = mutableListOf<NodeAStarCalculator>()
     private var greatPath = mutableListOf<NodeAStarCalculator>()
 
-    fun findGreatPath(currentPosition: Pair<Int, Int>, goal: Pair<Int, Int>): List<Pair<Int, Int>> {
+    fun findGreatPath(currentPosition: Pair<Int, Int>, goal: Pair<Int, Int>): PathToGoal {
         resetSearch()
 
         // Initializing non visited nodes
@@ -36,7 +38,12 @@ class AStarSearch(private val board: List<List<Node>>) {
                 // Neighbor is the goal?
                 if (neighbor == goal) {
                     println("Encontramos o objetivo:")
-                    return createGreatPath(nodeCalculatorToVisit, goal)
+                    val greatPath = createGreatPath(neighborCalculator, goal)
+                    val visitedPath = Path(visitedNodes.map { it.node }, visitedNodes.sumOf { it.node.type.cost })
+                    return PathToGoal(
+                        pathGreat = greatPath,
+                        pathComplete = visitedPath
+                    )
                 }
 
                 if (neighborCalculator.node.type.cost < 0) {
@@ -82,18 +89,18 @@ class AStarSearch(private val board: List<List<Node>>) {
     }
 
     private fun createGreatPath(
-        goalFatherCalculator: NodeAStarCalculator,
+        goalCalculator: NodeAStarCalculator,
         goal: Pair<Int, Int>
-    ): MutableList<Pair<Int, Int>> {
-        var father = goalFatherCalculator.father
-        val greatPath = mutableListOf<Pair<Int, Int>>()
-        greatPath.add(goal)
-        greatPath.add(goalFatherCalculator.node.position)
+    ): Path {
+        var father = goalCalculator.father
+        val greatPath = mutableListOf(board[goal.first][goal.second])
         while (father != null) {
-            greatPath.add(father.node.position)
+            val fatherPosition = father.node.position
+            greatPath.add(board[fatherPosition.first][fatherPosition.second])
             father = father.father
         }
         greatPath.reverse()
-        return greatPath
+
+        return Path(greatPath, goalCalculator.heuristic)
     }
 }

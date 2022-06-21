@@ -9,7 +9,7 @@ class NodeAStarCalculator(
     private val goal: Pair<Int, Int>
 ) {
     var gFunction: Int = node.type.cost + accumulatedCost
-    private var hFunction: Int = calculateDistanceToGoal()
+    var hFunction: Int = calculateDistanceToGoal()
 
     val heuristic
         get() = gFunction + hFunction

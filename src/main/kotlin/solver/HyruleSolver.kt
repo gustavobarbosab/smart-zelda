@@ -31,8 +31,13 @@ class HyruleSolver(private val board: List<List<Node>>) {
         val linkHouse = mainPositions.linkHouse
         val pathToSolution = search.findGreatPath(linkHouse, bestDungeonToGo)
 
-        pathToSolution.forEach {
-            print("$it | ")
+        println("\nGreat path: cost ${pathToSolution.pathGreat.totalCost}")
+        pathToSolution.pathGreat.path.forEach {
+            print("${it.position} | ")
+        }
+        println("\nTotal path: cost ${pathToSolution.pathComplete.totalCost}")
+        pathToSolution.pathComplete.path.forEach {
+            print("${it.position} | ")
         }
     }
 

@@ -25,12 +25,7 @@ class UniformCostSearch(private val board: List<List<Node>>) {
 
                     val totalCost = visitedNodes.sumOf { it.type.cost }
 
-                    return PathToGoal(
-                        pathComplete = visitedNodes,
-                        greatPath = visitedNodes,
-                        costGreat = totalCost,
-                        costComplete = totalCost
-                    )
+                    return TODO()
                 }
 
                 // Exists a node do not visited better than this neighbor?
