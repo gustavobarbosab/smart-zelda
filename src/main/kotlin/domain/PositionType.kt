@@ -18,4 +18,8 @@ sealed class PositionType(
     object Link : PositionType(enum = PositionTypeEnum.LINK, ignoreToExpand = true)
     object LostWoods : PositionType(enum = PositionTypeEnum.LOST_WOODS, ignoreToExpand = true)
     object Pendant : PositionType(enum = PositionTypeEnum.PENDANT, ignoreToExpand = true)
+
+    object Dark : PositionType(100000000, PositionTypeEnum.D)
+
+    object Light : PositionType(10, PositionTypeEnum.L)
 }

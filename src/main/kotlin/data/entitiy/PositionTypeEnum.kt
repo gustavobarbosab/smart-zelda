@@ -12,4 +12,6 @@ enum class PositionTypeEnum {
     LINK,
     LOST_WOODS,
     PENDANT,
+    D,
+    L,
 }

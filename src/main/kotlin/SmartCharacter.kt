@@ -17,16 +17,19 @@ class SmartCharacter(
 
     fun findFirstPendant() = apply {
         val nearestDungeon = hyruleSolver.goToNearestDungeon()
+        firstDungeonSolver.findPendant()
         // findPendant(nearestDungeon)
     }
 
     fun findSecondPendant() = apply {
         val nearestDungeon = hyruleSolver.goToNearestDungeon()
+        secondDungeonSolver.findPendant()
         // findPendant(nearestDungeon)
     }
 
     fun findThirdPendant() = apply {
         val nearestDungeon = hyruleSolver.goToNearestDungeon()
+        thirdDungeonSolver.findPendant()
         // findPendant(nearestDungeon)
     }
 
