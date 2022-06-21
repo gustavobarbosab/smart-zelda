@@ -6,6 +6,7 @@ import domain.Path
 import domain.PathToGoal
 import domain.mapper.mapToNodeGenerator
 import domain.exceptions.ImpossibleGoalException
+import kotlin.math.cos
 
 class AStarSearch(private val board: List<List<Node>>) {
 
@@ -38,6 +39,7 @@ class AStarSearch(private val board: List<List<Node>>) {
                 // Neighbor is the goal?
                 if (neighbor == goal) {
                     println("Encontramos o objetivo:")
+                    visitedNodes.add(neighborCalculator)
                     val greatPath = createGreatPath(neighborCalculator, goal)
                     val visitedPath = Path(visitedNodes.map { it.node }, visitedNodes.sumOf { it.node.type.cost })
                     return PathToGoal(
@@ -46,7 +48,7 @@ class AStarSearch(private val board: List<List<Node>>) {
                     )
                 }
 
-                if (neighborCalculator.node.type.cost < 0) {
+                if (neighborCalculator.node.type.ignoreToExpand) {
                     return@forEach
                 }
 
