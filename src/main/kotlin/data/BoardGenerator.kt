@@ -72,6 +72,8 @@ class BoardGenerator(
             LINK -> PositionType.Link
             LOST_WOODS -> PositionType.LostWoods
             PositionTypeEnum.PENDANT -> PositionType.Pendant
+            PositionTypeEnum.D -> PositionType.Dark
+            PositionTypeEnum.L -> PositionType.Light
         }
         return Node(position, positionType, maxSize)
     }
