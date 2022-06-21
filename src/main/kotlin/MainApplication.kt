@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
 
     smartCharacter
         .findFirstPendant()
-        .findSecondPendant()
-        .findThirdPendant()
-        .goToLostWoods()
+        // .findSecondPendant()
+        // .findThirdPendant()
+        // .goToLostWoods()
 }
