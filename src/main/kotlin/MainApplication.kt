@@ -30,13 +30,31 @@ fun main(args: Array<String>) {
     hyruleBoard.isVisible = true
 
     val dungeonOneBoard = ZeldaMapFrame("Dungeon One Map")
-    setupDungeon(dungeonOneBoard, smartCharacter, boardGenerator.dungeonOneBoardModel, NearestDungeon.First)
+    setupDungeon(
+        dungeonOneBoard,
+        hyruleBoard,
+        smartCharacter,
+        boardGenerator.dungeonOneBoardModel,
+        NearestDungeon.First
+    )
 
     val dungeonTwoBoard = ZeldaMapFrame("Dungeon Two Map")
-    setupDungeon(dungeonTwoBoard, smartCharacter, boardGenerator.dungeonTwoBoardModel, NearestDungeon.Second)
+    setupDungeon(
+        dungeonTwoBoard,
+        hyruleBoard,
+        smartCharacter,
+        boardGenerator.dungeonTwoBoardModel,
+        NearestDungeon.Second
+    )
 
     val dungeonThreeBoard = ZeldaMapFrame("Dungeon Three Map")
-    setupDungeon(dungeonThreeBoard, smartCharacter, boardGenerator.dungeonThreeBoardModel, NearestDungeon.Third)
+    setupDungeon(
+        dungeonThreeBoard,
+        hyruleBoard,
+        smartCharacter,
+        boardGenerator.dungeonThreeBoardModel,
+        NearestDungeon.Third
+    )
 
     hyruleBoard.listener = {
         val path: Path? = when (hyruleMoveState) {
@@ -70,6 +88,7 @@ fun main(args: Array<String>) {
 
 private fun setupDungeon(
     board: ZeldaMapFrame,
+    hyruleBoard: ZeldaMapFrame,
     smartCharacter: SmartCharacter,
     boardMatrix: List<List<ZeldaCellModel>>,
     nearestDungeon: NearestDungeon
@@ -88,9 +107,12 @@ private fun setupDungeon(
                 board.setPathCost(path.nodes.last().position.toString(), path.totalCost.toString())
                 totalCost += path.totalCost
                 board.setTotalCost(totalCost.toString())
+                hyruleBoard.setTotalCost(smartCharacter.totalCost.toString())
             }
             NextMoveDungeon.GoToTheEntry -> {
                 board.setTotalCost((totalCost * 2).toString())
+                smartCharacter.totalCost += totalCost
+                hyruleBoard.setTotalCost(smartCharacter.totalCost.toString())
             }
         }
         state = state.nextMove
