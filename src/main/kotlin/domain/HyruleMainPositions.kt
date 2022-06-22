@@ -7,15 +7,6 @@ class HyruleMainPositions {
     lateinit var firstDungeon: Pair<Int, Int>
     lateinit var secondDungeon: Pair<Int, Int>
     lateinit var thirdDungeon: Pair<Int, Int>
-
-    val nonVisitedDungeons: MutableList<Pair<Int, Int>> by lazy {
-        mutableListOf(firstDungeon, secondDungeon, thirdDungeon)
-    }
-
-    fun dungeonVisited(dungeonPosition: Pair<Int, Int>) {
-        nonVisitedDungeons.remove(dungeonPosition)
-    }
-
     lateinit var currentPosition: Pair<Int, Int>
 
     fun printResume() {
