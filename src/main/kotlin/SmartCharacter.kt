@@ -3,17 +3,17 @@ import domain.NearestDungeon.First
 import domain.NearestDungeon.Second
 import domain.NearestDungeon.Third
 import domain.Node
-import presentation.HyruleBoardScreen
+import presentation.ZeldaBoardScreen
+import presentation.ZeldaCellModel
 import solver.DungeonSolver
 import solver.HyruleSolver
+import java.util.Timer
+import java.util.TimerTask
 import javax.swing.SwingUtilities
-
-
-
 
 class SmartCharacter(
     hyruleBoard: List<List<Node>>,
-    firstDungeonBoard: List<List<Node>>,
+    val firstDungeonBoard: List<List<Node>>,
     secondDungeonBoard: List<List<Node>>,
     thirdDungeonBoard: List<List<Node>>
 ) {
@@ -21,7 +21,7 @@ class SmartCharacter(
     private val firstDungeonSolver = DungeonSolver(firstDungeonBoard)
     private val secondDungeonSolver = DungeonSolver(secondDungeonBoard)
     private val thirdDungeonSolver = DungeonSolver(thirdDungeonBoard)
-    val board = HyruleBoardScreen(firstDungeonBoard)
+    private val board = ZeldaBoardScreen()
 
     private var totalCost = 0
 
@@ -40,18 +40,31 @@ class SmartCharacter(
             Third -> thirdDungeonSolver.findPendant()
         }
 
+        if (dungeonFound.nearestDungeon == First) {
+            SwingUtilities.invokeLater {
+                // board.createScreen()
+                val items = firstDungeonBoard.map { row -> row.map { ZeldaCellModel(it.type.color) } }
+                board.updateTable("First Dungeon",items)
+                Timer().schedule(object : TimerTask() {
+                    override fun run() {
+                        board.updateBoardWithVisitedNodes(pathToSolution)
+                    }
+                }, 3000)
+            }
+        }
+
         totalCost += pathToSolution.totalCost
 
         println("\n\nGreat path to dungeon ${dungeonFound.position}")
         println("Great path cost to dungeon: ${dungeonFound.greatPath.totalCost}")
         print("Path traveled in Hyrule: ")
-        dungeonFound.greatPath.path.forEach {
+        dungeonFound.greatPath.nodes.forEach {
             print("${it.position} | ")
         }
 
         println("\nGreat path cost inside dungeon: ${pathToSolution.totalCost}")
         print("Path traveled in Dungeon: ")
-        pathToSolution.path.forEach {
+        pathToSolution.nodes.forEach {
             print("${it.position} | ")
         }
         println("\n-------------------------------------------------------")
@@ -61,7 +74,7 @@ class SmartCharacter(
         val pathToSolution = hyruleSolver.goToLostWoods()
         println("\n\nGreat path cost: ${pathToSolution.totalCost}")
         println("Great path to lost woods")
-        pathToSolution.path.forEach {
+        pathToSolution.nodes.forEach {
             print("${it.position} | ")
         }
         println("\n-------------------------------------------------------")
@@ -70,9 +83,5 @@ class SmartCharacter(
 
         println()
         log("Total cost considering the path traveled in Hyrule and three dungeons: $totalCost")
-
-        SwingUtilities.invokeLater {
-            board.createScreen()
-        }
     }
 }
