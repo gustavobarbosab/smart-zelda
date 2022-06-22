@@ -17,9 +17,12 @@ class ZeldaTableCellRenderer : DefaultTableCellRenderer() {
         val positionType = value as ZeldaCellModel
         super.setBackground(positionType.backgroundColor)
         val tableColumn = table.columnModel.getColumn(column)
-        tableColumn.minWidth = 20
-        tableColumn.maxWidth = 20
-        tableColumn.preferredWidth = 20
+        tableColumn.minWidth = COLUMN_SIZE
+        tableColumn.maxWidth = COLUMN_SIZE
         return this
+    }
+
+    companion object {
+        private const val COLUMN_SIZE = 15
     }
 }

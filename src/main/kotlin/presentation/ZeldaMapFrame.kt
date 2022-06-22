@@ -1,24 +1,30 @@
 package presentation
 
 import domain.Path
-import java.awt.Color.DARK_GRAY
-import java.awt.Dimension
-import java.awt.GridBagConstraints
-import java.awt.GridBagLayout
+import java.awt.FlowLayout
 import javax.swing.JButton
 import javax.swing.JFrame
+import javax.swing.JLabel
 import javax.swing.JPanel
-import javax.swing.JScrollPane
 import javax.swing.JTable
 
-class ZeldaMapFrame(screenTitle: String) {
+class ZeldaMapFrame(
+    screenTitle: String
+) {
 
     var listener: ScreenListener? = null
     private val frame: JFrame = JFrame()
     private val table = JTable()
     private val panel = JPanel()
     private val button = JButton()
+    private val totalCostText = JLabel()
+    private val pathCostText = JLabel()
     private var tableAdapter = ZeldaTableAdapter()
+    var isVisible: Boolean = false
+        set(value) {
+            field = value
+            frame.isVisible = isVisible
+        }
 
     init {
         frame.title = screenTitle
@@ -44,26 +50,16 @@ class ZeldaMapFrame(screenTitle: String) {
 
     private fun setupFrame() = frame.apply {
         frame.add(panel)
-        panel.layout = GridBagLayout()
-
-        val gridConstraint = GridBagConstraints()
-        gridConstraint.fill = GridBagConstraints.HORIZONTAL
-        gridConstraint.gridx = 0
-        gridConstraint.gridy = 0
-        gridConstraint.ipady = 40
-        panel.add(table, gridConstraint)
-
-        gridConstraint.fill = GridBagConstraints.CENTER
-        gridConstraint.gridx = 0
-        gridConstraint.gridy = 1
-        gridConstraint.ipady = 0
-        panel.add(button, gridConstraint)
-
+        val layoutManager = FlowLayout()
+        panel.layout = layoutManager
+        panel.add(table)
+        panel.add(pathCostText)
+        panel.add(totalCostText)
+        panel.add(button)
         defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-        contentPane.preferredSize = Dimension(INITIAL_SCREEN_DIMENSION, INITIAL_SCREEN_DIMENSION)
+        extendedState = JFrame.MAXIMIZED_BOTH
         setLocationRelativeTo(null)
         pack()
-        isVisible = true
     }
 
     private fun setupButton() = button.addActionListener {
@@ -74,6 +70,14 @@ class ZeldaMapFrame(screenTitle: String) {
         button.text = buttonName
     }
 
+    fun setTotalCost(cost: String) {
+        totalCostText.text = "Total cost: $cost  "
+    }
+
+    fun setPathCost(goal: String, cost: String) {
+        pathCostText.text = "Cost to go to $goal: $cost  "
+    }
+
     fun updateBoardWithVisitedNodes(path: Path) {
         path.nodes.forEach { node ->
             tableAdapter.updateToVisited(node.position)
@@ -82,9 +86,5 @@ class ZeldaMapFrame(screenTitle: String) {
 
     interface ScreenListener {
         fun onButtonClicked()
-    }
-
-    companion object {
-        const val INITIAL_SCREEN_DIMENSION = 600
     }
 }

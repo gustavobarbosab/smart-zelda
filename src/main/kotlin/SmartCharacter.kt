@@ -21,7 +21,7 @@ class SmartCharacter(
     private val thirdDungeonSolver = DungeonSolver(thirdDungeonBoard)
     private var dungeonFound: DungeonFound? = null
 
-    private var totalCost = 0
+    var totalCost = 0
 
     fun findNearestDungeon(): Path {
         dungeonFound = hyruleSolver.goToNearestDungeon()
