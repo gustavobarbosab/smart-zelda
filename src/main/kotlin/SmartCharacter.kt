@@ -36,25 +36,33 @@ class SmartCharacter(
 
         totalCost += pathToSolution.totalCost
 
-        println("\nTotal path cost: ${pathToSolution.totalCost}")
-        println("Great path cost: ${pathToSolution.totalCost}")
-        println("Great path to dungeon ${dungeonFound.position}")
+        println("\n\nGreat path to dungeon ${dungeonFound.position}")
+        println("Great path cost to dungeon: ${dungeonFound.greatPath.totalCost}")
+        print("Path traveled in Hyrule: ")
+        dungeonFound.greatPath.path.forEach {
+            print("${it.position} | ")
+        }
+
+        println("\nGreat path cost inside dungeon: ${pathToSolution.totalCost}")
+        print("Path traveled in Dungeon: ")
         pathToSolution.path.forEach {
             print("${it.position} | ")
         }
-        println()
+        println("\n-------------------------------------------------------")
     }
 
     fun goToLostWoods() = apply {
         val pathToSolution = hyruleSolver.goToLostWoods()
-        println("Great path cost: ${pathToSolution.totalCost}")
+        println("\n\nGreat path cost: ${pathToSolution.totalCost}")
         println("Great path to lost woods")
         pathToSolution.path.forEach {
             print("${it.position} | ")
         }
+        println("\n-------------------------------------------------------")
 
         totalCost += pathToSolution.totalCost
 
+        println()
         log("Total cost considering the path traveled in Hyrule and three dungeons: $totalCost")
     }
 }

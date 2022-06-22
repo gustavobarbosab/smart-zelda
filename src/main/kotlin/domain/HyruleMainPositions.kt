@@ -23,7 +23,8 @@ class HyruleMainPositions {
         println("A primeira dungeon está em: $firstDungeon")
         println("A segunda dungeon está em: $secondDungeon")
         println("A terceira dungeon está em: $thirdDungeon")
-        println("Lost Wood está  em: $lostWoods\n")
+        println("Lost Wood está  em: $lostWoods")
+        println("-------------------------------------------------------")
     }
 
     fun startCurrentPosition() {
