@@ -1,15 +1,13 @@
 import common.log
+import domain.DungeonFound
 import domain.NearestDungeon.First
 import domain.NearestDungeon.Second
 import domain.NearestDungeon.Third
 import domain.Node
-import presentation.ZeldaBoardScreen
-import presentation.ZeldaCellModel
+import domain.Path
+import domain.exceptions.PositionNotFoundException
 import solver.DungeonSolver
 import solver.HyruleSolver
-import java.util.Timer
-import java.util.TimerTask
-import javax.swing.SwingUtilities
 
 class SmartCharacter(
     hyruleBoard: List<List<Node>>,
@@ -21,78 +19,37 @@ class SmartCharacter(
     private val firstDungeonSolver = DungeonSolver(firstDungeonBoard)
     private val secondDungeonSolver = DungeonSolver(secondDungeonBoard)
     private val thirdDungeonSolver = DungeonSolver(thirdDungeonBoard)
-    private val board = ZeldaBoardScreen()
+    private var dungeonFound: DungeonFound? = null
 
     private var totalCost = 0
 
-    fun findFirstPendant() = findPendant()
+    fun findNearestDungeon(): Path {
+        dungeonFound = hyruleSolver.goToNearestDungeon()
+        val greatPath = dungeonFound!!.greatPath
+        totalCost += greatPath.totalCost
+        return greatPath
+    }
 
-    fun findSecondPendant() = findPendant()
-
-    fun findThirdPendant() = findFirstPendant()
-
-    private fun findPendant() = apply {
-        val dungeonFound = hyruleSolver.goToNearestDungeon()
-
-        val pathToSolution = when (dungeonFound.nearestDungeon) {
+    fun findPendant(): Path {
+        val pathToSolution = when (dungeonFound?.nearestDungeon) {
             First -> firstDungeonSolver.findPendant()
             Second -> secondDungeonSolver.findPendant()
             Third -> thirdDungeonSolver.findPendant()
+            else -> throw PositionNotFoundException("Dungeon not found")
         }
-
-        if (dungeonFound.nearestDungeon == First) {
-            SwingUtilities.invokeLater {
-                // board.createScreen()
-                val items = firstDungeonBoard.map { row -> row.map { ZeldaCellModel(it.type.color) } }
-                board.updateTable("First Dungeon",items)
-                Timer().schedule(object : TimerTask() {
-                    override fun run() {
-                        board.updateBoardWithVisitedNodes(pathToSolution)
-                    }
-                }, 3000)
-            }
-        }
-
-        totalCost += 2 * pathToSolution.totalCost
-
-        println("\n\nGreat path to dungeon ${dungeonFound.position}")
-        println("Great path cost to dungeon: ${dungeonFound.greatPath.totalCost}")
-        print("Path traveled in Hyrule: ")
-        dungeonFound.greatPath.nodes.forEach {
-            print("${it.position} | ")
-        }
-
-        println("\nGreat path cost inside dungeon: ${pathToSolution.totalCost}")
-        print("Path traveled in Dungeon: ")
-        pathToSolution.nodes.forEach {
-            print("${it.position} | ")
-        }
-        println("\n-------------------------------------------------------")
+        totalCost += pathToSolution.totalCost
+        return pathToSolution
     }
 
-    fun goBackToLinksHouse() = apply {
+    fun goBackToLinkHouse(): Path {
         val pathToSolution = hyruleSolver.goBackToLinksHouse()
-        println("\n\nGreat path cost: ${pathToSolution.totalCost}")
-        println("Great path back to link house")
-        pathToSolution.nodes.forEach {
-            print("${it.position} | ")
-        }
-        println("\n-------------------------------------------------------")
         totalCost += pathToSolution.totalCost
+        return pathToSolution
     }
 
-    fun goToLostWoods() = apply {
+    fun goToLostWoods(): Path {
         val pathToSolution = hyruleSolver.goToLostWoods()
-        println("\n\nGreat path cost: ${pathToSolution.totalCost}")
-        println("Great path to lost woods")
-        pathToSolution.nodes.forEach {
-            print("${it.position} | ")
-        }
-        println("\n-------------------------------------------------------")
-
         totalCost += pathToSolution.totalCost
-
-        println()
-        log("Total cost considering the path traveled in Hyrule and three dungeons: $totalCost")
+        return pathToSolution
     }
 }
