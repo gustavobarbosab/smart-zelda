@@ -53,7 +53,7 @@ class SmartCharacter(
             }
         }
 
-        totalCost += pathToSolution.totalCost
+        totalCost += 2 * pathToSolution.totalCost
 
         println("\n\nGreat path to dungeon ${dungeonFound.position}")
         println("Great path cost to dungeon: ${dungeonFound.greatPath.totalCost}")
@@ -68,6 +68,17 @@ class SmartCharacter(
             print("${it.position} | ")
         }
         println("\n-------------------------------------------------------")
+    }
+
+    fun goBackToLinksHouse() = apply {
+        val pathToSolution = hyruleSolver.goBackToLinksHouse()
+        println("\n\nGreat path cost: ${pathToSolution.totalCost}")
+        println("Great path back to link house")
+        pathToSolution.nodes.forEach {
+            print("${it.position} | ")
+        }
+        println("\n-------------------------------------------------------")
+        totalCost += pathToSolution.totalCost
     }
 
     fun goToLostWoods() = apply {

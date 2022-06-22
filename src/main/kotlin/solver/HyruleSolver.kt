@@ -76,6 +76,11 @@ class HyruleSolver(private val board: List<List<Node>>) {
         return lowerPosition?.first
     }
 
+    fun goBackToLinksHouse(): Path {
+        val pathToSolution = aStarHyruleSearch.findGreatPath(mainPositions.currentPosition, mainPositions.linkHouse)
+        return pathToSolution.pathGreat
+    }
+
     fun goToLostWoods(): Path {
         val pathToSolution = aStarHyruleSearch.findGreatPath(mainPositions.currentPosition, mainPositions.lostWoods)
         return pathToSolution.pathGreat

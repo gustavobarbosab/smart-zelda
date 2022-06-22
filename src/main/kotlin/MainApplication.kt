@@ -20,5 +20,6 @@ fun main(args: Array<String>) {
         .findFirstPendant()
         .findSecondPendant()
         .findThirdPendant()
+        .goBackToLinksHouse()
         .goToLostWoods()
 }
