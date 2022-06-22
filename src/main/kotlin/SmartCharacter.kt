@@ -3,8 +3,13 @@ import domain.NearestDungeon.First
 import domain.NearestDungeon.Second
 import domain.NearestDungeon.Third
 import domain.Node
+import presentation.HyruleBoardScreen
 import solver.DungeonSolver
 import solver.HyruleSolver
+import javax.swing.SwingUtilities
+
+
+
 
 class SmartCharacter(
     hyruleBoard: List<List<Node>>,
@@ -16,6 +21,7 @@ class SmartCharacter(
     private val firstDungeonSolver = DungeonSolver(firstDungeonBoard)
     private val secondDungeonSolver = DungeonSolver(secondDungeonBoard)
     private val thirdDungeonSolver = DungeonSolver(thirdDungeonBoard)
+    val board = HyruleBoardScreen(firstDungeonBoard)
 
     private var totalCost = 0
 
@@ -64,5 +70,9 @@ class SmartCharacter(
 
         println()
         log("Total cost considering the path traveled in Hyrule and three dungeons: $totalCost")
+
+        SwingUtilities.invokeLater {
+            board.createScreen()
+        }
     }
 }
