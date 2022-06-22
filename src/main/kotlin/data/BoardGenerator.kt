@@ -14,6 +14,7 @@ import data.entitiy.PositionTypeEnum.SAND
 import data.entitiy.PositionTypeEnum.SECOND_DUNGEON
 import data.entitiy.PositionTypeEnum.THIRD_DUNGEON
 import data.entitiy.PositionTypeEnum.WATER
+import presentation.ZeldaCellModel
 
 class BoardGenerator(
     private val hyruleFilename: String,
@@ -41,6 +42,20 @@ class BoardGenerator(
         log("Generating third dungeon board")
         readAndMapToNode(thirdDungeonFilename)
     }
+
+    val hyruleBoardModel
+        get() = mapToModel(hyruleBoard)
+
+    val dungeonOneBoardModel
+        get() = mapToModel(firstDungeonBoard)
+
+    val dungeonTwoBoardModel
+        get() = mapToModel(secondDungeonBoard)
+
+    val dungeonThreeBoardModel
+        get() = mapToModel(thirdDungeonBoard)
+
+    private fun mapToModel(board: List<List<Node>>) = board.map { row -> row.map { ZeldaCellModel(it.type.color) } }
 
     private fun readAndMapToNode(filename: String): List<List<Node>> {
         val board = FileReader(filename).read<ArrayList<ArrayList<String>>>()
