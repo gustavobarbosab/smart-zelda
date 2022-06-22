@@ -1,7 +1,7 @@
 package movements
 
-sealed class NextMoveDungeon(val nextMove: NextMoveDungeon) {
-    object FindPendant : NextMoveDungeon(GoToTheEntry)
-    object GoToTheEntry : NextMoveDungeon(DungeonFinished)
-    object DungeonFinished : NextMoveDungeon(DungeonFinished)
+sealed class NextMoveDungeon(val textButton: String, val nextMove: NextMoveDungeon) {
+    object FindPendant : NextMoveDungeon("Voltar",GoToTheEntry)
+    object GoToTheEntry : NextMoveDungeon("Fim",DungeonFinished)
+    object DungeonFinished : NextMoveDungeon("Fim",DungeonFinished)
 }

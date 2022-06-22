@@ -1,18 +1,16 @@
-import common.log
 import domain.DungeonFound
+import domain.NearestDungeon
 import domain.NearestDungeon.First
 import domain.NearestDungeon.Second
 import domain.NearestDungeon.Third
 import domain.Node
 import domain.Path
-import domain.exceptions.AllDungeonsVisitedException
-import domain.exceptions.PositionNotFoundException
 import solver.DungeonSolver
 import solver.HyruleSolver
 
 class SmartCharacter(
     hyruleBoard: List<List<Node>>,
-    val firstDungeonBoard: List<List<Node>>,
+    firstDungeonBoard: List<List<Node>>,
     secondDungeonBoard: List<List<Node>>,
     thirdDungeonBoard: List<List<Node>>
 ) {
@@ -31,12 +29,11 @@ class SmartCharacter(
         return dungeonFound!!
     }
 
-    fun findPendant(): Path {
-        val pathToSolution = when (dungeonFound?.nearestDungeon) {
+    fun findPendant(nearestDungeon: NearestDungeon): Path {
+        val pathToSolution = when (nearestDungeon) {
             First -> firstDungeonSolver.findPendant()
             Second -> secondDungeonSolver.findPendant()
             Third -> thirdDungeonSolver.findPendant()
-            else -> throw PositionNotFoundException("Dungeon not found")
         }
         totalCost += pathToSolution.totalCost
         return pathToSolution
