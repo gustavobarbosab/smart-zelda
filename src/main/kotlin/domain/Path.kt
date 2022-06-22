@@ -1,6 +1,6 @@
 package domain
 
 data class Path(
-    val path: List<Node>,
+    val nodes: List<Node>,
     val totalCost: Int,
 )
