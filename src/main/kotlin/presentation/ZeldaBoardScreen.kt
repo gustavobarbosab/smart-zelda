@@ -5,6 +5,7 @@ import java.awt.Dimension
 import javax.swing.JFrame
 import javax.swing.JScrollPane
 import javax.swing.JTable
+import javax.swing.SwingUtilities
 
 class ZeldaBoardScreen {
 
@@ -42,8 +43,10 @@ class ZeldaBoardScreen {
             val position = node.position
             val newItem = currentBoard[position.first][position.second]
             newItem.thisNodeWasVisited()
-            tableAdapter.setValueAt(newItem, position.first, position.second)
-            tableAdapter.fireTableStructureChanged()
+            SwingUtilities.invokeLater {
+                tableAdapter.setValueAt(newItem, position.first, position.second)
+                tableAdapter.fireTableStructureChanged()
+            }
             Thread.sleep(DELAY_TO_MOVE)
         }
     }
