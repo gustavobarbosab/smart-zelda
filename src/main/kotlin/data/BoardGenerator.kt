@@ -74,6 +74,7 @@ class BoardGenerator(
             PositionTypeEnum.PENDANT -> PositionType.Pendant
             PositionTypeEnum.D -> PositionType.Dark
             PositionTypeEnum.L -> PositionType.Light
+            PositionTypeEnum.SWORD -> PositionType.Sword
         }
         return Node(position, positionType, maxSize)
     }

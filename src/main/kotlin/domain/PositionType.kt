@@ -23,4 +23,5 @@ sealed class PositionType(
     object Pendant : PositionType(enum = PENDANT, ignoreToExpand = true, color = Color(120, 70, 208))
     object Dark : PositionType(100000000, D, Color.DARK_GRAY)
     object Light : PositionType(10, L, Color.GRAY)
+    object Sword : PositionType(enum = SWORD, ignoreToExpand = true, color = Color(53, 47, 90))
 }

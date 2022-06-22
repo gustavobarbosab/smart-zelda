@@ -14,4 +14,5 @@ enum class PositionTypeEnum {
     PENDANT,
     D,
     L,
+    SWORD,
 }
