@@ -1,18 +1,17 @@
 package solver
 
-import domain.HyruleMainPositions
 import domain.Node
+import domain.Path
 import domain.PositionType
 import search.AStarSearch
 
 class DungeonSolver(private val board: List<List<Node>>) {
 
-    var currentPosition = Pair(0,0);
-    var goal = Pair(0,0);
+    var currentPosition = Pair(0, 0);
+    var goal = Pair(0, 0);
     val search = AStarSearch(board)
 
-    fun findPendant() {
-
+    fun findPendant(): Path {
         board.forEach { line ->
             line.forEach { position ->
                 if (position.type == PositionType.Link) {
@@ -34,5 +33,6 @@ class DungeonSolver(private val board: List<List<Node>>) {
         pathToSolution.pathComplete.path.forEach {
             print("${it.position} | ")
         }
+        return pathToSolution.pathGreat
     }
 }

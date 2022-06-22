@@ -1,13 +1,17 @@
 package solver
 
+import domain.DungeonFound
 import domain.HyruleMainPositions
+import domain.NearestDungeon
+import domain.NearestDungeon.First
+import domain.NearestDungeon.Second
+import domain.NearestDungeon.Third
 import domain.Node
+import domain.Path
 import domain.PositionType
 import domain.exceptions.AllDungeonsVisitedException
 import search.AStarSearch
 import search.UniformCostSearch
-import solver.HyruleSolver.Companion.NearestDungeon.*
-import kotlin.math.cos
 
 class HyruleSolver(private val board: List<List<Node>>) {
 
@@ -26,7 +30,7 @@ class HyruleSolver(private val board: List<List<Node>>) {
         mainPositions.printResume()
     }
 
-    fun goToNearestDungeon(): NearestDungeon {
+    fun goToNearestDungeon(): DungeonFound {
         val bestDungeon = findNextDungeonToGo() ?: throw AllDungeonsVisitedException("All dungeons visited")
 
         val bestDungeonPosition = when (bestDungeon) {
@@ -36,17 +40,8 @@ class HyruleSolver(private val board: List<List<Node>>) {
         }
 
         val pathToSolution = aStarHyruleSearch.findGreatPath(mainPositions.currentPosition, bestDungeonPosition)
-
-        println("\nTotal path cost: ${pathToSolution.pathComplete.totalCost}")
-        println("Great path cost: ${pathToSolution.pathGreat.totalCost}")
-        println("Great path to dungeon $bestDungeonPosition")
-        pathToSolution.pathGreat.path.forEach {
-            print("${it.position} | ")
-        }
-        println()
         mainPositions.currentPosition = bestDungeonPosition
-
-        return bestDungeon
+        return DungeonFound(bestDungeon, pathToSolution.pathGreat, bestDungeonPosition)
     }
 
     private fun findNextDungeonToGo(): NearestDungeon? {
@@ -81,14 +76,9 @@ class HyruleSolver(private val board: List<List<Node>>) {
         return lowerPosition?.first
     }
 
-    fun goToLostWoods() {
+    fun goToLostWoods(): Path {
         val pathToSolution = aStarHyruleSearch.findGreatPath(mainPositions.currentPosition, mainPositions.lostWoods)
-        println("\nTotal path cost: ${pathToSolution.pathComplete.totalCost}")
-        println("Great path cost: ${pathToSolution.pathGreat.totalCost}")
-        println("Great path to lost woods")
-        pathToSolution.pathGreat.path.forEach {
-            print("${it.position} | ")
-        }
+        return pathToSolution.pathGreat
     }
 
     private fun mapPositions() {
@@ -116,12 +106,4 @@ class HyruleSolver(private val board: List<List<Node>>) {
 
     private fun print(node: Node) =
         print("\t ${node.position}-${node.type.enum.name.subSequence(0..3)} |")
-
-    companion object {
-        sealed class NearestDungeon {
-            object First : NearestDungeon()
-            object Second : NearestDungeon()
-            object Third : NearestDungeon()
-        }
-    }
 }
