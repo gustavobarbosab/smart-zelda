@@ -12,7 +12,7 @@ class ZeldaMapFrame(
     screenTitle: String
 ) {
 
-    var listener: ScreenListener? = null
+    var listener: () -> Unit = {  }
     private val frame: JFrame = JFrame()
     private val table = JTable()
     private val panel = JPanel()
@@ -63,7 +63,7 @@ class ZeldaMapFrame(
     }
 
     private fun setupButton() = button.addActionListener {
-        listener?.onButtonClicked()
+        listener.invoke()
     }
 
     fun setButtonText(buttonName: String) {
@@ -82,9 +82,5 @@ class ZeldaMapFrame(
         path.nodes.forEach { node ->
             tableAdapter.updateToVisited(node.position)
         }
-    }
-
-    interface ScreenListener {
-        fun onButtonClicked()
     }
 }

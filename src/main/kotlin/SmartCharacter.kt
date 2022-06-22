@@ -5,6 +5,7 @@ import domain.NearestDungeon.Second
 import domain.NearestDungeon.Third
 import domain.Node
 import domain.Path
+import domain.exceptions.AllDungeonsVisitedException
 import domain.exceptions.PositionNotFoundException
 import solver.DungeonSolver
 import solver.HyruleSolver
@@ -23,11 +24,11 @@ class SmartCharacter(
 
     var totalCost = 0
 
-    fun findNearestDungeon(): Path {
+    fun findNearestDungeon(): DungeonFound {
         dungeonFound = hyruleSolver.goToNearestDungeon()
-        val greatPath = dungeonFound!!.greatPath
+        val greatPath = dungeonFound?.greatPath ?: throw NullPointerException("Dungeon not found")
         totalCost += greatPath.totalCost
-        return greatPath
+        return dungeonFound!!
     }
 
     fun findPendant(): Path {
